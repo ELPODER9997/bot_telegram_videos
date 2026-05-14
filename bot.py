@@ -1,4 +1,5 @@
 import os
+import asyncio
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
@@ -49,15 +50,16 @@ async def recibir_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Hubo un error.")
         print(f"Error: {error}")
 
-async def main():
+def main():
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.VIDEO | filters.Document.VIDEO, recibir_video))
     
     print(f"🤖 Bot iniciado en Railway!")
     print(f"✅ GRUPO_ID configurado: {GRUPO_ID}")
-    await app.run_polling()
+    
+    # Usar run_polling directamente sin asyncio.run()
+    app.run_polling()
 
-if __name__ == "__main__":
-    import asyncio
-    asyncio.run(main())
+if _name_ == "_main_":
+    main()
