@@ -1,13 +1,18 @@
 import os
-import asyncio
+import logging
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-# Lee variables con verificación
+# Configurar logging para ver errores
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO
+)
+
+# Leer variables de entorno
 TOKEN = os.environ.get("BOT_TOKEN", "")
 GRUPO_ID_STR = os.environ.get("GRUPO_ID", "")
 
-# Depuración: imprimir valores para ver qué llega
 print(f"TOKEN recibido: {'SÍ' if TOKEN else 'NO'}")
 print(f"GRUPO_ID recibido: {GRUPO_ID_STR}")
 
@@ -51,15 +56,18 @@ async def recibir_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"Error: {error}")
 
 def main():
-    app = Application.builder().token(TOKEN).build()
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.VIDEO | filters.Document.VIDEO, recibir_video))
+    # Crear aplicación
+    application = Application.builder().token(TOKEN).build()
+    
+    # Añadir handlers
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.VIDEO | filters.Document.VIDEO, recibir_video))
     
     print(f"🤖 Bot iniciado en Railway!")
     print(f"✅ GRUPO_ID configurado: {GRUPO_ID}")
     
-    # Usar run_polling directamente sin asyncio.run()
-    app.run_polling()
+    # Iniciar polling
+    application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 if __name__ == "__main__":
     main()
