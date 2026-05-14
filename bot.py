@@ -58,6 +58,6 @@ async def main():
     print(f"✅ GRUPO_ID configurado: {GRUPO_ID}")
     await app.run_polling()
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
